@@ -1,14 +1,17 @@
-
-
 cmake_minimum_required(VERSION 3.15)
-project(MyTests)
+project(MyProject)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-
+# Enable CTest for running tests
 enable_testing()
 
-add_executable(my_tests test_string_utils.cpp)
-target_link_libraries(my_tests ${CONAN_LIBS})
+# Find GTest (provided by Conan)
+find_package(GTest REQUIRED)
 
-add_test(NAME MyGTestSuite COMMAND my_tests)
+# Add your test executable
+add_executable(MyTests test_string_utils.cpp)
+
+# Link GTest to the test executable
+target_link_libraries(MyTests GTest::gtest GTest::gtest_main)
+
+# Register the test with CTest (use the correct path)
+add_test(NAME MyTests COMMAND $<TARGET_FILE:MyTests>)

@@ -7,4 +7,6 @@ project(http-server)
 
 add_executable(http-server src/main.cpp)
 
+enable_testing()
+
 add_subdirectory(test)
