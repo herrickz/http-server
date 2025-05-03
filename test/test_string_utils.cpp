@@ -1,6 +1,12 @@
 
 #include <gtest/gtest.h>
 #include "StringUtils.h"
+#include <chrono>
+#include <iostream>
+#include <algorithm>
+#include <numeric>
+
+using namespace std::chrono_literals;
 
 TEST(MyTest, StringUtilsHelloWorldSplit) {
 
@@ -35,8 +41,40 @@ TEST(MyTest, StringUtilsHelloWorldSplitTwice) {
     EXPECT_EQ(elements[2], "lets go");
 }
 
-TEST(MyTest, BasicAssertions) {
-    EXPECT_EQ(1, 1);
+TEST(MyTest, splitStringOnDelimiterPerformance) {
+
+    const int32_t TESTS_TO_PERFORM = 10000;
+    std::vector<long> splitStringDurations;
+
+    for(int i = 0; i < TESTS_TO_PERFORM; i++) {
+
+        auto begin = std::chrono::high_resolution_clock::now();
+
+        std::string line = "hello world lets go";
+
+        auto elements = splitLineOnDelimiter(line, ' ');
+
+        auto end = std::chrono::high_resolution_clock::now();
+
+        const std::chrono::duration<long, std::nano> difference = end - begin;
+
+        splitStringDurations.push_back(difference.count());
+    }
+
+    auto sumLambda = [](long a, long b) { return a + b; };
+
+    auto total = std::accumulate(
+        splitStringDurations.begin(),
+        splitStringDurations.end(),
+        0,
+        sumLambda
+    );
+
+    std::cout << "Average: " << total / splitStringDurations.size() << std::endl;
+
+    // EXPECT_LT(diff.count(), 500);
+
+    // std::cout << "Run time: " << diff.count() << " nanoseconds" << std::endl;
 }
 
 int main(int argc, char **argv) {

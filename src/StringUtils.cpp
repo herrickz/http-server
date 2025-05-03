@@ -1,5 +1,6 @@
 
 #include "StringUtils.h"
+#include <iostream>
 
 /**
  * @param line: Line to split
@@ -9,26 +10,28 @@
 std::vector<std::string> splitLineOnDelimiter(const std::string &line, const char delim, int times) {
 
     std::vector<std::string> elements;
-    std::string currentElement = "";
 
     uint32_t timesSplit = 0;
 
-    for(int i = 0; i < line.size(); i++) {
+    size_t delimiterPosition = line.find(delim);
+    size_t currentPosition = 0U;
 
-        bool shouldSplit = (times == 0 || timesSplit < times);
+    while(delimiterPosition != std::string::npos && (times == 0 || timesSplit < times)) {
 
-        if(line[i] == delim && currentElement != "" && shouldSplit) {
-            elements.push_back(currentElement);
-            currentElement = "";
-            timesSplit++;
-        } else {
-            currentElement += line[i];
-        }
+        size_t characterCount = delimiterPosition - currentPosition;
+
+        std::string subString = line.substr(currentPosition, characterCount);
+
+        elements.push_back(subString);
+        currentPosition = delimiterPosition + 1;
+        timesSplit++;
+        delimiterPosition = line.find(delim, currentPosition + 1);
 
     }
 
-    if(currentElement != "") {
-        elements.push_back(currentElement);
+    if(currentPosition < line.size()) {
+        size_t leftoverCharacterCount = line.size() - currentPosition;
+        elements.push_back(line.substr(currentPosition, leftoverCharacterCount));
     }
 
     return elements;
