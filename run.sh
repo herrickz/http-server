@@ -1,8 +1,9 @@
 #!/bin/bash
 
 clean=false
+test=false
 
-while getopts "drvc" opt; do
+while getopts "drvct" opt; do
   case $opt in
     d)
       BUILD_TYPE=Debug
@@ -15,6 +16,9 @@ while getopts "drvc" opt; do
       ;;
     c)
       clean=true
+      ;;
+    t)
+      test=true
       ;;
     \?)
       echo "Invalid option: -$OPTARG"
@@ -37,4 +41,9 @@ cd build
 cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
 cmake --build . --verbose
-ctest -C $BUILD_TYPE --verbose
+
+if $test; then
+  ctest -C $BUILD_TYPE --verbose
+else
+  ./http-server
+fi
