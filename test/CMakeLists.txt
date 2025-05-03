@@ -7,9 +7,9 @@ enable_testing()
 
 find_package(GTest REQUIRED)
 
-add_executable(MyTests test_string_utils.cpp ${CMAKE_SOURCE_DIR}/src/StringUtils.cpp)
+add_executable(HttpTest test_string_utils.cpp ${CMAKE_SOURCE_DIR}/src/StringUtils.cpp)
 
-target_link_libraries(MyTests GTest::gtest GTest::gtest_main)
-target_include_directories(MyTests PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(HttpTest GTest::gtest GTest::gtest_main)
+target_include_directories(HttpTest PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-add_test(NAME MyTests COMMAND $<TARGET_FILE:MyTests>)
+add_test(NAME HttpTest COMMAND $<TARGET_FILE:HttpTest>)

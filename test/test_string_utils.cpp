@@ -8,7 +8,7 @@
 
 using namespace std::chrono_literals;
 
-TEST(MyTest, StringUtilsHelloWorldSplit) {
+TEST(StringUtil, HelloWorldSplit) {
 
     std::string line = "hello world";
 
@@ -18,7 +18,7 @@ TEST(MyTest, StringUtilsHelloWorldSplit) {
     EXPECT_EQ(elements[1], "world");
 }
 
-TEST(MyTest, StringUtilsHelloWorldSplitOnce) {
+TEST(StringUtil, HelloWorldSplitOnce) {
 
     std::string line = "hello world lets go";
 
@@ -29,7 +29,7 @@ TEST(MyTest, StringUtilsHelloWorldSplitOnce) {
     EXPECT_EQ(elements[1], "world lets go");
 }
 
-TEST(MyTest, StringUtilsHelloWorldSplitTwice) {
+TEST(StringUtil, HelloWorldSplitTwice) {
 
     std::string line = "hello world lets go";
 
@@ -41,7 +41,7 @@ TEST(MyTest, StringUtilsHelloWorldSplitTwice) {
     EXPECT_EQ(elements[2], "lets go");
 }
 
-TEST(MyTest, splitStringOnDelimiterPerformance) {
+TEST(StringUtil, splitStringOnDelimiterPerformance) {
 
     const int32_t TESTS_TO_PERFORM = 10000;
     std::vector<long> splitStringDurations;
