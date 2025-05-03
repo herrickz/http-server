@@ -104,9 +104,10 @@ int main() {
         // split the entire buffer into separate line entries
         for(int i = 0; i < bytes.size(); i++) {
 
-            if(bytes[i] == '\n') {
+            if(bytes[i] == '\r') {
                 lineEntries.push_back(currentEntry);
                 currentEntry = "";
+                i++; // skip new line
             } else {
                 currentEntry += bytes[i];
             }
@@ -114,6 +115,10 @@ int main() {
         }
 
         lineEntries.push_back(currentEntry);
+
+        bool encounteredEmptyLine = false;
+        std::vector<std::string> headers;
+        std::vector<std::string> body;
 
         for(int i = 0; i < lineEntries.size(); i++) {
 
@@ -126,8 +131,29 @@ int main() {
 
                 std::cout << httpStartLine << std::endl;
             } else {
-                // std::cout << line << std::endl;
+
+                if(!encounteredEmptyLine && line != "") {
+                    headers.push_back(line);
+                } else if(encounteredEmptyLine) {
+                    body.push_back(line);
+                }
+
+                if(!encounteredEmptyLine && line == "") {
+                    encounteredEmptyLine = true;
+                    std::cout << "Encountered empty line" << std::endl;
+                }
+
             }
+        }
+
+        for(auto header : headers) {
+            std::cout << "HEADER: " << header << std::endl;
+        }
+
+        std::cout << "Body" << std::endl;
+
+        for(auto line : body) {
+            std::cout << line << std::endl;
         }
     }
 

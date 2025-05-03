@@ -64,7 +64,7 @@ void TcpSocket::Accept() {
 std::vector<uint8_t> TcpSocket::ReceiveRequest() {
     std::vector<uint8_t> bytes;
 
-    const uint32_t MAX_RECEIVE_SIZE = 512;
+    const uint32_t MAX_RECEIVE_SIZE = 65536;
 
     char buffer[MAX_RECEIVE_SIZE];
 
@@ -89,10 +89,10 @@ std::vector<uint8_t> TcpSocket::ReceiveRequest() {
         return bytes;
     }
 
-    const char *reply = "HTTP/1.1 200 Success\n"
-    "Server: Hello\n"
-    "Connection: close\n"
-    "Content-Length: 0\n";
+    const char *reply = "HTTP/1.1 200 Success\r\n"
+    "Server: Hello\r\n"
+    "Connection: close\r\n"
+    "Content-Length: 0\r\n";
 
     send(mAcceptFileDescriptor, reply, strlen(reply), 0);
 
