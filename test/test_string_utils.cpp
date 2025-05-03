@@ -72,9 +72,8 @@ TEST(MyTest, splitStringOnDelimiterPerformance) {
 
     std::cout << "Average: " << total / splitStringDurations.size() << std::endl;
 
-    // EXPECT_LT(diff.count(), 500);
+    EXPECT_LT(total / splitStringDurations.size(), 200);
 
-    // std::cout << "Run time: " << diff.count() << " nanoseconds" << std::endl;
 }
 
 int main(int argc, char **argv) {
