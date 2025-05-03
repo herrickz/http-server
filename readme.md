@@ -1,14 +1,19 @@
 
 
+## Building
+
 ```shell
-rm -rf build
-mkdir build
+./run.sh -d # Debug (Default)
+./run.sh -r # Release
+./run.sh -c # Clean
+./run.sh -t # Test
+```
 
-conan install . --output-folder=build --build=missing
+## Testing
 
-cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-
-cmake --build . --verbose
-ctest -C Release --verbose
+```shell
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '@large.json' \
+  http://127.0.0.1:9090
 ```

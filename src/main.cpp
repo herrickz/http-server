@@ -1,17 +1,18 @@
 
 #include <iostream>
-#include <sys/socket.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
 #include <unistd.h>
 #include <vector>
 #include <cassert>
 #include <sstream>
 
 #include "StringUtils.h"
+#include "TcpSocket.h"
 
 #define assertm(exp, msg) assert((void(msg), exp))
 
@@ -85,109 +86,50 @@ HttpStartLine getHttpStartLineFromStringList(const std::vector<std::string> &ele
 
 int main() {
 
-    int tcpSocketFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
+    TcpSocket tcpSocket("127.0.0.1", 9090);
 
-    sockaddr_in myAddress;
-    sockaddr_in peerAddress;
+    tcpSocket.Bind();
+    tcpSocket.Listen();
 
-    memset(&myAddress, 0, sizeof(sockaddr_in));
-    myAddress.sin_family = AF_INET;
-    myAddress.sin_port = htons(9090);
-    inet_aton("127.0.0.1", &myAddress.sin_addr);
+    while(true) {
 
-    int bindReturnValue = bind(tcpSocketFileDescriptor, (const sockaddr *)&myAddress, sizeof(sockaddr_in));
+        tcpSocket.Accept();
+        std::vector<uint8_t> bytes = tcpSocket.ReceiveRequest();
 
-    // errno just holds error number
-    // need to use strerror to get the actual error string
-    if(bindReturnValue == -1) {
-        std::cout << "Bind failed: " << strerror(errno) << std::endl;
-        return -1;
-    }
+        std::cout << "Received: " << bytes.size() << std::endl;
 
-    int listenReturnValue = listen(tcpSocketFileDescriptor, 10);
+        std::vector<std::string> lineEntries;
+        std::string currentEntry = "";
 
-    if(listenReturnValue == -1) {
-        std::cout << "Listen failed: " << strerror(errno) << std::endl;
-        return -1;
-    }
+        // split the entire buffer into separate line entries
+        for(int i = 0; i < bytes.size(); i++) {
 
-    socklen_t peerAddressSize = sizeof(peerAddress);
+            if(bytes[i] == '\n') {
+                lineEntries.push_back(currentEntry);
+                currentEntry = "";
+            } else {
+                currentEntry += bytes[i];
+            }
 
-    int acceptFileDescriptor = accept(tcpSocketFileDescriptor, (sockaddr *) &peerAddress, &peerAddressSize);
-
-    if(acceptFileDescriptor == -1) {
-        std::cout << "Accept failed: " << strerror(errno) << std::endl;
-        return -1;
-    }
-
-    char buffer[512];
-
-    ssize_t receiveByteLength = recv(acceptFileDescriptor, buffer, 512, 0);
-
-    if(receiveByteLength == -1) {
-        std::cout << "Receive failed: " << strerror(errno) << std::endl;
-        return -1;
-    }
-
-    std::cout << "received: " << receiveByteLength << std::endl;
-
-    int closeReturnValue = close(tcpSocketFileDescriptor);
-
-    if(closeReturnValue == -1) {
-        std::cout << "Close failed: " << strerror(errno) << std::endl;
-        return -1;
-    }
-
-    std::cout << buffer << std::endl;
-
-    std::string requestType = "";
-    std::string path = "";
-
-    std::vector<std::string> lineEntries;
-    std::string currentEntry = "";
-
-    // split the entire buffer into separate line entries
-    for(int i = 0; i < receiveByteLength; i++) {
-
-        if(buffer[i] == '\n') {
-            lineEntries.push_back(currentEntry);
-            currentEntry = "";
-        } else {
-            currentEntry += buffer[i];
         }
 
-    }
+        lineEntries.push_back(currentEntry);
 
-    lineEntries.push_back(currentEntry);
+        for(int i = 0; i < lineEntries.size(); i++) {
 
-    for(int i = 0; i < lineEntries.size(); i++) {
+            const std::string &line = lineEntries[i];
 
-        const std::string &line = lineEntries[i];
+            if(i == 0) { // Start Line
+                std::vector<std::string> elements = splitLineOnDelimiter(line, ' ');
 
-        if(i == 0) { // Start Line
-            std::vector<std::string> elements = splitLineOnDelimiter(line, ' ');
+                HttpStartLine httpStartLine = getHttpStartLineFromStringList(elements);
 
-            HttpStartLine httpStartLine = getHttpStartLineFromStringList(elements);
-
-            std::cout << httpStartLine << std::endl;
+                std::cout << httpStartLine << std::endl;
+            } else {
+                // std::cout << line << std::endl;
+            }
         }
     }
-
-
-    // for(int i = 0; i < receiveByteLength; i++) {
-
-    //     if(buffer[i] == ' ') {
-    //         lineEntries.push_back(currentEntry);
-    //         currentEntry = "";
-    //     } else {
-
-    //     }
-
-    //     if(newlineCount == 0) {
-
-    //     }
-
-    // }
 
     return 0;
 }
