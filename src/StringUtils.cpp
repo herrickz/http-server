@@ -7,7 +7,7 @@
  * @param delimiter: Delimiter to use when splitting the line
  * @param times: Amount of times to split the line by the delimiter (Default 0 (split all instances))
  */
-std::vector<std::string> splitLineOnDelimiter(const std::string &line, const char delim, int times) {
+std::vector<std::string> splitLineOnDelimiter(const std::string &line, const char delim, uint32_t times) {
 
     std::vector<std::string> elements;
 

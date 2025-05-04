@@ -3,4 +3,4 @@
 #include <vector>
 #include <string>
 
-std::vector<std::string> splitLineOnDelimiter(const std::string &line, const char delim, int times = 0);
+std::vector<std::string> splitLineOnDelimiter(const std::string &line, const char delim, uint32_t times = 0);

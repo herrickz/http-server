@@ -1,5 +1,6 @@
 
 #include "TcpSocket.h"
+#include "Logger.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -22,7 +23,7 @@ void TcpSocket::Bind() {
 
     memset(&myAddress, 0, sizeof(sockaddr_in));
     myAddress.sin_family = AF_INET;
-    myAddress.sin_port = htons(9090);
+    myAddress.sin_port = htons(mPortNumber);
     inet_aton("127.0.0.1", &myAddress.sin_addr);
 
     int bindReturnValue = bind(mTcpSocketFileDescriptor, (const sockaddr *)&myAddress, sizeof(sockaddr_in));
@@ -85,7 +86,7 @@ std::vector<uint8_t> TcpSocket::ReceiveRequest() {
     }
 
     if(receiveByteLength == -1) {
-        std::cout << "Receive failed: " << strerror(errno) << std::endl;
+        LOG_ERROR("Receive failed: %s", strerror(errno));
         return bytes;
     }
 

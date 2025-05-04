@@ -12,6 +12,7 @@
 #include <sstream>
 
 #include "StringUtils.h"
+#include "Logger.h"
 #include "TcpSocket.h"
 
 #define assertm(exp, msg) assert((void(msg), exp))
@@ -84,7 +85,12 @@ HttpStartLine getHttpStartLineFromStringList(const std::vector<std::string> &ele
     return httpStartLine;
 }
 
-int main() {
+int main(int argc, char **argv) {
+
+    (void)argc;
+    (void)argv;
+
+    LOG_INFO("%d: Lets go", 1);
 
     TcpSocket tcpSocket("127.0.0.1", 9090);
 
@@ -102,7 +108,7 @@ int main() {
         std::string currentEntry = "";
 
         // split the entire buffer into separate line entries
-        for(int i = 0; i < bytes.size(); i++) {
+        for(size_t i = 0; i < bytes.size(); i++) {
 
             if(bytes[i] == '\r') {
                 lineEntries.push_back(currentEntry);
@@ -120,7 +126,7 @@ int main() {
         std::vector<std::string> headers;
         std::vector<std::string> body;
 
-        for(int i = 0; i < lineEntries.size(); i++) {
+        for(size_t i = 0; i < lineEntries.size(); i++) {
 
             const std::string &line = lineEntries[i];
 
