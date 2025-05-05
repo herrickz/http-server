@@ -1,4 +1,14 @@
 
+# HTTP Server
+
+Implementation of an HTTP server
+
+## Roadmap
+
+- [ ] Command line argument parser
+  - Port to run on
+  - Directory to serve files from
+- [ ] Serve HTML files from a directory
 
 ## Building
 

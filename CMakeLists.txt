@@ -10,6 +10,7 @@ add_executable(
     src/StringUtils.cpp
     src/TcpSocket.cpp
     src/Logger.cpp
+    src/ArgumentParser.cpp
 )
 
 target_compile_options(http-server PRIVATE

@@ -14,6 +14,7 @@
 #include "StringUtils.h"
 #include "Logger.h"
 #include "TcpSocket.h"
+#include "ArgumentParser.h"
 
 #define assertm(exp, msg) assert((void(msg), exp))
 
@@ -87,8 +88,9 @@ HttpStartLine getHttpStartLineFromStringList(const std::vector<std::string> &ele
 
 int main(int argc, char **argv) {
 
-    (void)argc;
-    (void)argv;
+    ArgumentParser argumentParser;
+
+    argumentParser.ParseArguments(argc, argv);
 
     LOG_INFO("%d: Lets go", 1);
 

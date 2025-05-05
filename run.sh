@@ -42,6 +42,11 @@ cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_
 
 cmake --build . --verbose
 
+if [ $? -ne 0 ]; then
+  echo "Build failure"
+  exit 1
+fi
+
 if $test; then
   ctest -C $BUILD_TYPE --verbose
 else
