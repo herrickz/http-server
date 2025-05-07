@@ -90,9 +90,15 @@ int main(int argc, char **argv) {
 
     ArgumentParser argumentParser;
 
+    argumentParser.AddArgument("p", "port");
+    argumentParser.AddArgument("fp", "file-path");
+
     argumentParser.ParseArguments(argc, argv);
 
-    LOG_INFO("%d: Lets go", 1);
+    const std::string filePath = argumentParser.GetValue<std::string>("fp");
+    const int port = argumentParser.GetValue<int>("p");
+
+    LOG_INFO("Running on port %d and file path: %s", port, filePath.c_str());
 
     TcpSocket tcpSocket("127.0.0.1", 9090);
 

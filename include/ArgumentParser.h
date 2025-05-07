@@ -34,15 +34,35 @@ public:
 
     ArgumentParser();
 
+    /**
+     * Add a named argument to the command line arg list
+     *
+     * @param shortName: Short flag name (ex. p -> "-p")
+     * @param longName: Long flag name (ex. port -> "--port")
+     */
     void AddArgument(
         const std::string &shortName,
         const std::string &longName
     );
 
+    /**
+     * Parse arguments straight from main
+     *
+     *  Skips program name and expects
+     *  an even amount of named arguments
+     */
     void ParseArguments(int argc, char **argv);
 
+    /**
+     * Get the value of a named argument
+     *
+     * Returns default values for:
+     *      - std::string -> ""
+     *      - int -> 0
+     *      - float -> 0.0f
+     */
     template <typename T>
-    T getValue(const std::string &name);
+    T GetValue(const std::string &name);
 
 private:
 

@@ -70,6 +70,6 @@ TEST(StringUtil, splitStringOnDelimiterPerformance) {
         sumLambda
     );
 
-    std::cout << "Average: " << total / splitStringDurations.size() << std::endl;
+    std::cout << "Average: " << total / splitStringDurations.size() << " nanoseconds" <<  std::endl;
 }
 

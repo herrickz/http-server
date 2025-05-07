@@ -58,10 +58,10 @@ void ArgumentParser::AddArgument(
 
 void ArgumentParser::ParseArguments(int argc, char **argv) {
 
-    if(argc % 2 != 0) {
+    if((argc - 1) % 2 != 0) {
 
         std::stringstream ss;
-        ss << "Uneven amount of arguments: %d in '";
+        ss << "Uneven amount of arguments: " << argc << " in '";
 
         for(int i = 0; i < argc; i++) {
             ss << argv[i];
@@ -76,7 +76,7 @@ void ArgumentParser::ParseArguments(int argc, char **argv) {
         throw std::runtime_error(ss.str());
     }
 
-    for(int i = 0; i < argc; i++) {
+    for(int i = 1; i < argc; i++) {
 
         const std::string argument = std::string(argv[i]);
 
@@ -102,10 +102,14 @@ void ArgumentParser::ParseArguments(int argc, char **argv) {
 }
 
 template<>
-int ArgumentParser::getValue<int>(const std::string &name) {
+int ArgumentParser::GetValue<int>(const std::string &name) {
 
     for(const auto &commandLineArgument : mCommandLineArgumentList) {
         if(name == commandLineArgument.GetShortName() || name == commandLineArgument.GetLongName()) {
+
+            if(commandLineArgument.GetData() == "") {
+                return 0;
+            }
 
             try {
                 int value = std::stoi(commandLineArgument.GetData());
@@ -123,7 +127,7 @@ int ArgumentParser::getValue<int>(const std::string &name) {
 }
 
 template<>
-std::string ArgumentParser::getValue<std::string>(const std::string &name) {
+std::string ArgumentParser::GetValue<std::string>(const std::string &name) {
 
     for(const auto &commandLineArgument : mCommandLineArgumentList) {
 
@@ -136,7 +140,7 @@ std::string ArgumentParser::getValue<std::string>(const std::string &name) {
 }
 
 template<>
-float ArgumentParser::getValue<float>(const std::string &name) {
+float ArgumentParser::GetValue<float>(const std::string &name) {
     (void) name;
 
     return 1.0f;

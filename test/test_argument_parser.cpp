@@ -10,14 +10,16 @@ TEST(ArgumentParser, oneIntegerArgumentShortName) {
 
     argumentParser.AddArgument("p", "port");
 
-    char *array[] = { "-p", "2000" };
+    char *array[] = { "http-server", "-p", "2000" };
+
+    int arrayElements = sizeof(array) / sizeof(char*);
 
     char **argv = array;
 
-    argumentParser.ParseArguments(2, argv);
+    argumentParser.ParseArguments(arrayElements, argv);
 
-    EXPECT_EQ(argumentParser.getValue<int>("p"), 2000);
-    EXPECT_EQ(argumentParser.getValue<int>("port"), 2000);
+    EXPECT_EQ(argumentParser.GetValue<int>("p"), 2000);
+    EXPECT_EQ(argumentParser.GetValue<int>("port"), 2000);
 }
 
 TEST(ArgumentParser, oneIntegerArgumentLongName) {
@@ -26,14 +28,16 @@ TEST(ArgumentParser, oneIntegerArgumentLongName) {
 
     argumentParser.AddArgument("p", "port");
 
-    char *array[] = { "--port", "3000" };
+    char *array[] = { "http-server", "--port", "3000" };
+
+    int arrayElements = sizeof(array) / sizeof(char*);
 
     char **argv = array;
 
-    argumentParser.ParseArguments(2, argv);
+    argumentParser.ParseArguments(arrayElements, argv);
 
-    EXPECT_EQ(argumentParser.getValue<int>("p"), 3000);
-    EXPECT_EQ(argumentParser.getValue<int>("port"), 3000);
+    EXPECT_EQ(argumentParser.GetValue<int>("p"), 3000);
+    EXPECT_EQ(argumentParser.GetValue<int>("port"), 3000);
 }
 
 TEST(ArgumentParser, oneStringArgumentShortName) {
@@ -42,14 +46,16 @@ TEST(ArgumentParser, oneStringArgumentShortName) {
 
     argumentParser.AddArgument("p", "path");
 
-    char *array[] = { "-p", "/usr/bin" };
+    char *array[] = { "http-server", "-p", "/usr/bin" };
+
+    int arrayElements = sizeof(array) / sizeof(char*);
 
     char **argv = array;
 
-    argumentParser.ParseArguments(2, argv);
+    argumentParser.ParseArguments(arrayElements, argv);
 
-    EXPECT_EQ(argumentParser.getValue<std::string>("p"), "/usr/bin");
-    EXPECT_EQ(argumentParser.getValue<std::string>("path"), "/usr/bin");
+    EXPECT_EQ(argumentParser.GetValue<std::string>("p"), "/usr/bin");
+    EXPECT_EQ(argumentParser.GetValue<std::string>("path"), "/usr/bin");
 }
 
 TEST(ArgumentParser, oneIntegerArgumentShortNameAndOneStringLongNameArgument) {
@@ -59,17 +65,19 @@ TEST(ArgumentParser, oneIntegerArgumentShortNameAndOneStringLongNameArgument) {
     argumentParser.AddArgument("p", "port");
     argumentParser.AddArgument("n", "name");
 
-    char *array[] = { "-p", "4", "--name", "hello" };
+    char *array[] = { "http-server", "-p", "4", "--name", "hello" };
+
+    int arrayElements = sizeof(array) / sizeof(char*);
 
     char **argv = array;
 
-    argumentParser.ParseArguments(4, argv);
+    argumentParser.ParseArguments(arrayElements, argv);
 
-    EXPECT_EQ(argumentParser.getValue<std::string>("n"), "hello");
-    EXPECT_EQ(argumentParser.getValue<std::string>("name"), "hello");
+    EXPECT_EQ(argumentParser.GetValue<std::string>("n"), "hello");
+    EXPECT_EQ(argumentParser.GetValue<std::string>("name"), "hello");
 
-    EXPECT_EQ(argumentParser.getValue<int>("p"), 4);
-    EXPECT_EQ(argumentParser.getValue<int>("port"), 4);
+    EXPECT_EQ(argumentParser.GetValue<int>("p"), 4);
+    EXPECT_EQ(argumentParser.GetValue<int>("port"), 4);
 }
 
 TEST(ArgumentParser, unevenAmountOfArgumentsThrowsException) {
@@ -78,19 +86,39 @@ TEST(ArgumentParser, unevenAmountOfArgumentsThrowsException) {
 
     argumentParser.AddArgument("p", "port");
 
-    char *array[] = { "-p", "asd", "44444" };
+    char *array[] = { "http-server", "-p", "asd", "44444" };
+
+    int arrayElements = sizeof(array) / sizeof(char*);
 
     char **argv = array;
 
     try {
 
-        argumentParser.ParseArguments(3, argv);
+        argumentParser.ParseArguments(arrayElements, argv);
+
         FAIL() << "Was able to parse uneven amount of arguments";
 
     } catch(std::exception &exception) {
-        std::cout << exception.what() << std::endl;
         EXPECT_TRUE(true);
     }
+
+}
+
+TEST(ArgumentParser, getIntegerWithNoArgumentsReturnsDefault0) {
+
+    ArgumentParser argumentParser;
+
+    argumentParser.AddArgument("p", "port");
+
+    char *array[] = { "http-server" };
+
+    int arrayElements = sizeof(array) / sizeof(char*);
+
+    char **argv = array;
+
+    argumentParser.ParseArguments(arrayElements, argv);
+
+    EXPECT_EQ(argumentParser.GetValue<int>("p"), 0);
 
 }
 

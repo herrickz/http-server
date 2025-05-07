@@ -50,5 +50,5 @@ fi
 if $test; then
   ctest -C $BUILD_TYPE --verbose
 else
-  ./http-server
+  ./http-server -p 9090 -fp .
 fi
