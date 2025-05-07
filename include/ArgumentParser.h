@@ -12,13 +12,13 @@ public:
         const std::string longName
     );
 
-    std::string GetShortName();
-    std::string GetLongName();
+    std::string GetShortName() const;
+    std::string GetLongName() const;
 
     void SetData(const char *data);
-    std::string GetData();
+    std::string GetData() const;
 
-    bool MatchesArgumentName(const std::string &name);
+    bool MatchesArgumentName(const std::string &name) const;
 
 private:
 

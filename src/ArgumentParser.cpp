@@ -5,16 +5,17 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
 CommandLineArgument::CommandLineArgument(
     const std::string shortName,
     const std::string longName
 ): mShortName(shortName), mLongName(longName) { }
 
-std::string CommandLineArgument::GetShortName() {
+std::string CommandLineArgument::GetShortName() const {
     return mShortName;
 }
-std::string CommandLineArgument::GetLongName() {
+std::string CommandLineArgument::GetLongName() const {
     return mLongName;
 }
 
@@ -22,11 +23,11 @@ void CommandLineArgument::SetData(const char *data) {
     mData = std::string(data);
 }
 
-std::string CommandLineArgument::GetData() {
+std::string CommandLineArgument::GetData() const {
     return mData;
 }
 
-bool CommandLineArgument::MatchesArgumentName(const std::string &argument) {
+bool CommandLineArgument::MatchesArgumentName(const std::string &argument) const {
 
     if ((argument.size() > 2)
         && (argument.substr(0, 2) == "--")
@@ -57,19 +58,43 @@ void ArgumentParser::AddArgument(
 
 void ArgumentParser::ParseArguments(int argc, char **argv) {
 
+    if(argc % 2 != 0) {
+
+        std::stringstream ss;
+        ss << "Uneven amount of arguments: %d in '";
+
+        for(int i = 0; i < argc; i++) {
+            ss << argv[i];
+
+            if(i != (argc - 1)) {
+                ss << " ";
+            }
+        }
+
+        ss << "'";
+
+        throw std::runtime_error(ss.str());
+    }
+
     for(int i = 0; i < argc; i++) {
 
         const std::string argument = std::string(argv[i]);
+
+        bool foundCommandLineArgument = false;
 
         for(auto &commandLineArgument : mCommandLineArgumentList) {
 
             if(commandLineArgument.MatchesArgumentName(argument)) {
                 commandLineArgument.SetData(argv[i+1]);
                 i++;
-            } else {
-                LOG_ERROR("Unrecognized flag: %s", argv[i]);
-                throw std::runtime_error("");
+                foundCommandLineArgument = true;
+                break;
             }
+        }
+
+        if(!foundCommandLineArgument) {
+            LOG_ERROR("Unrecognized flag: %s", argv[i]);
+            throw std::runtime_error("");
         }
 
     }
@@ -79,7 +104,7 @@ void ArgumentParser::ParseArguments(int argc, char **argv) {
 template<>
 int ArgumentParser::getValue<int>(const std::string &name) {
 
-    for(auto commandLineArgument : mCommandLineArgumentList) {
+    for(const auto &commandLineArgument : mCommandLineArgumentList) {
         if(name == commandLineArgument.GetShortName() || name == commandLineArgument.GetLongName()) {
 
             try {
@@ -99,7 +124,13 @@ int ArgumentParser::getValue<int>(const std::string &name) {
 
 template<>
 std::string ArgumentParser::getValue<std::string>(const std::string &name) {
-    (void) name;
+
+    for(const auto &commandLineArgument : mCommandLineArgumentList) {
+
+        if(name == commandLineArgument.GetShortName() || name == commandLineArgument.GetLongName()) {
+            return std::string(commandLineArgument.GetData());
+        }
+    }
 
     return "";
 }
