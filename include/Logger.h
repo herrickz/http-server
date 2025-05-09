@@ -17,5 +17,5 @@ constexpr const char* file_name_only(const char* path) {
     return last;
 }
 
-#define LOG_INFO(str, ...) do { log_info(str, file_name_only(__FILE__), __LINE__, ##__VA_ARGS__); printf("\n"); } while(0)
-#define LOG_ERROR(str, ...) do { log_info(str, file_name_only(__FILE__), __LINE__, ##__VA_ARGS__); printf("\n"); } while(0)
+#define LOG_INFO(str, ...) do { log_info(str, file_name_only(__FILE__), __LINE__, ##__VA_ARGS__); } while(0)
+#define LOG_ERROR(str, ...) do { log_info(str, file_name_only(__FILE__), __LINE__, ##__VA_ARGS__); } while(0)
