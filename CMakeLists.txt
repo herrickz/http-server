@@ -10,6 +10,7 @@ add_executable(
     src/StringUtils.cpp
     src/TcpSocket.cpp
     src/Logger.cpp
+    src/HttpParser.cpp
     src/ArgumentParser.cpp
 )
 

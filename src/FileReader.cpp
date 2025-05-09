@@ -19,7 +19,7 @@ FileReader::FileReader(const std::string &fileName) {
 
         std::vector<char> fileContentsArray;
 
-        fileContentsArray.reserve((int)fileSize);
+        fileContentsArray.resize((int)fileSize);
 
         stream.read(fileContentsArray.data(), fileSize);
 

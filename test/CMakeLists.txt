@@ -12,10 +12,12 @@ add_executable(
     test_string_utils.cpp
     test_argument_parser.cpp
     test_file_reader.cpp
+    test_http_parser.cpp
     ${CMAKE_SOURCE_DIR}/src/StringUtils.cpp
     ${CMAKE_SOURCE_DIR}/src/ArgumentParser.cpp
     ${CMAKE_SOURCE_DIR}/src/Logger.cpp
     ${CMAKE_SOURCE_DIR}/src/FileReader.cpp
+    ${CMAKE_SOURCE_DIR}/src/HttpParser.cpp
 )
 
 target_link_libraries(HttpTest GTest::gtest GTest::gtest_main)

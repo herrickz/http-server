@@ -6,6 +6,12 @@ Implementation of an HTTP server
 ## Roadmap
 
 - [ ] Serve HTML files from a directory
+
+```
+< content-length: 72
+< content-type: text/html; charset=UTF-8
+```
+
 - [ ] Default values for command line argument parser
 - [ ] Add positional parameters to command line argument parser
 
